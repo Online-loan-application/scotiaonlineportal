@@ -634,6 +634,7 @@ you can request a new one.</p>
         confirmed: confirmed ? 'yes' : 'no'
       });
       btn.textContent = 'Done ✓';
+      alert('Processing disbursement queue addition')
     } catch (sendError) {
       console.error('EmailJS error:', sendError);
       err.classList.add('show');
